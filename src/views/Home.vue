@@ -36,7 +36,7 @@
   
 		<img
 		  v-if="imageSource === ''"
-		  src="./thi.png"
+		  src="/src/thi.png"
 		  alt="Think"
 		  class="absolute -top-10 left-96  w-50 h-50 transform scaleX(-1)"
 		/>
@@ -90,8 +90,8 @@
 	  thalaForAReason.value = false;
 	}
   
-	const gifFolder = thalaForAReason.value ? './' : './';
-	const audioFolder = thalaForAReason.value ? './' : './';
+	const gifFolder = thalaForAReason.value ? '/src/' : '/src/';
+	const audioFolder = thalaForAReason.value ? '/src/' : '/src/';
 	const gifPrefix = thalaForAReason.value ? 'thala' : 'moye';
 	const audioPrefix = thalaForAReason.value ? 'thala' : 'moye';
   
