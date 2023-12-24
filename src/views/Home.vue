@@ -13,12 +13,10 @@
 		  Submit
 		</button>
   
-		<!-- Success messages -->
 		<div v-if="thalaForAReason !== null" :class="{ 'text-white': thalaForAReason, 'text-white': thalaForAReason === false }" class="mt-4 font-bold text-lg">
 		  {{ thalaForAReason ? successMessage : 'Moye Moyeeeeee' }}
 		</div>
   
-		<!-- Heart symbol and additional information -->
 		<div class="mt-8 ml-10 flex items-center">
 		  <span class="mr-2 text-white">❤️</span>
 		  <span :class="{ 'text-white': imageSource !== '','text-black': imageSource == '' }" >DM NIHAL |</span>
@@ -34,20 +32,11 @@
 		  </a>
 		</div>
   
-		<img
-		  v-if="imageSource === ''"
-		  src="/src/thi.png"
-		  alt="Think"
-		  class="absolute -top-10 left-96  w-50 h-50 transform scaleX(-1)"
-		/>
-	  </div>
+		<div v-if="imageSource === ''" :style="{ backgroundImage: `url(${backgroundImageSource})` }" class="absolute -top-10 left-96 w-50 h-50 transform scaleX(-1)" />
   
-	  <img
-		v-if="imageSource !== ''"
-		:src="imageSource"
-		alt="GIF"
-		class="absolute top-0 left-0 w-full h-full object-cover z-0"
-	  />
+		<div data-ref="embedContainer" class="ml-2"></div>
+		
+	  </div>
   
 	  <audio ref="audioElement">
 		<source :src="audioSource" type="audio/mp3" />
@@ -64,15 +53,48 @@
   const audioElement = ref(null);
   const audioSource = ref('');
   const successMessage = ref('');
+  const backgroundImageSource = ref(null);
+  const selectedEmbedCode = ref('');
   
-  const getRandomGIF = (folder, prefix, count) => {
-	const randomIndex = Math.floor(Math.random() * count) + 1;
-	return `${folder}/${prefix}${randomIndex}.gif`;
+  const thalaEmbedCodes = [
+	'<div class="tenor-gif-embed" data-postid="6108773100921201490" data-share-method="host" data-aspect-ratio="1.36364" data-width="100%"><a href="https://tenor.com/view/aditya-kumar-aaien-6th-class-gif-6108773100921201490">Aditya Kumar GIF</a>from <a href="https://tenor.com/search/aditya-gifs">Aditya GIFs</a></div>',
+	// Add more Thala embed codes as needed
+  ];
+  
+  const moyeEmbedCodes = [
+	'<div class="tenor-gif-embed" data-postid="14054000742208274238" data-share-method="host" data-aspect-ratio="0.886699" data-width="100%"><a href="https://tenor.com/view/shahid-kapoor-jab-we-met-alina-reaction-hindi-gif-14054000742208274238">Shahid Kapoor.Gif GIF</a>from <a href="https://tenor.com/search/shahid+kapoor-gifs">Shahid Kapoor GIFs</a></div>',
+	// Add more Moye embed codes as needed
+  ];
+  
+  const getRandomIndex = (count) => Math.floor(Math.random() * count);
+  
+  const selectRandomEmbed = (embedCodes) => {
+	const randomIndex = getRandomIndex(embedCodes.length);
+	return embedCodes[randomIndex];
   };
   
-  const getRandomAudio = (folder, prefix, count) => {
-	const randomIndex = Math.floor(Math.random() * count) + 1;
-	return `${folder}/${prefix}.mp3`;
+  const loadBackgroundComponent = () => {
+	const componentFolder = thalaForAReason.value ? 'thala' : 'moye';
+	const embedCodes = thalaForAReason.value ? thalaEmbedCodes : moyeEmbedCodes;
+	selectedEmbedCode.value = selectRandomEmbed(embedCodes);
+  
+	// Clear previous embed container content
+	const embedContainer = document.querySelector('[data-ref="embedContainer"]');
+	embedContainer.innerHTML = '';
+  
+	// Append the selected embed code
+	embedContainer.innerHTML = selectedEmbedCode.value;
+  
+	// Append the script tag dynamically
+	const scriptTag = document.createElement('script');
+	scriptTag.type = 'text/javascript';
+	scriptTag.async = true;
+	scriptTag.src = 'https://tenor.com/embed.js';
+  
+	embedContainer.appendChild(scriptTag);
+  
+	// Clear the image source
+	imageSource.value = '';
   };
   
   const checkAndAlert = async () => {
@@ -104,6 +126,18 @@
 	await audioElement.value.load();
 	playAudio();
 	getSuccessMessage();
+  
+	await loadBackgroundComponent();
+  };
+  
+  const getRandomGIF = (folder, prefix, count) => {
+	const randomIndex = getRandomIndex(count) + 1;
+	return `${folder}/${prefix}${randomIndex}.gif`;
+  };
+  
+  const getRandomAudio = (folder, prefix, count) => {
+	const randomIndex = getRandomIndex(count) + 1;
+	return `${folder}/${prefix}.mp3`;
   };
   
   const playAudio = () => {
