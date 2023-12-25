@@ -6,7 +6,7 @@
 
 ## Screenshots 📷
 
-![Thala for a Reason Screenshot](/path/to/screenshot.png)
+![Thala for a Reason Screenshot](thalascreen.png)
 
 ## Getting Started 🏁
 
